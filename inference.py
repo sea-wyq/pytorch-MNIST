@@ -2,7 +2,7 @@ import cv2
 import torch
 import torchvision.transforms as transforms
 
-from train import Model
+from Model import MNIST
 
 
 def images2tensor(image):
@@ -15,7 +15,7 @@ def images2tensor(image):
 
 if __name__ == "__main__":
     device = torch.device('cpu')
-    model = Model().to(device)
+    model = MNIST().to(device)
     model.load_state_dict(torch.load('mnist.pkl'))  # load
     input_data = images2tensor("0.png")
     res = model(input_data)

@@ -2,31 +2,12 @@ import torch
 from torch.autograd import Variable
 from torch.utils.data import DataLoader
 from torchvision import datasets, transforms
-
-
-class Model(torch.nn.Module):
-    def __init__(self):
-        super(Model, self).__init__()
-        self.conv = torch.nn.Sequential(torch.nn.Conv2d(1, 32, 3, 1, 1),
-                                        torch.nn.ReLU(),
-                                        torch.nn.Conv2d(32, 64, 3, 1, 1),
-                                        torch.nn.ReLU(),
-                                        torch.nn.MaxPool2d(2, 2))
-        self.dense = torch.nn.Sequential(torch.nn.Linear(14 * 14 * 64, 1024),
-                                         torch.nn.ReLU(),
-                                         torch.nn.Dropout(p=0.2),
-                                         torch.nn.Linear(1024, 10))
-
-    def forward(self, x):
-        x = self.conv(x)
-        x = x.view(-1, 14 * 14 * 64)
-        x = self.dense(x)
-        return x
+from Model import MNIST
 
 
 if __name__ == "__main__":
     device = torch.device('cpu')
-    model = Model().to(device)
+    model = MNIST().to(device)
     cost = torch.nn.CrossEntropyLoss()
     optimizer = torch.optim.Adam(model.parameters())
 
