@@ -2,7 +2,7 @@ import torch
 
 class MNIST(torch.nn.Module):
     def __init__(self):
-        super(Model, self).__init__()
+        super(MNIST, self).__init__()
         self.conv = torch.nn.Sequential(torch.nn.Conv2d(1, 32, 3, 1, 1),
                                         torch.nn.ReLU(),
                                         torch.nn.Conv2d(32, 64, 3, 1, 1),
