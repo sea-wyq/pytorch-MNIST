@@ -1,12 +1,29 @@
 import torch
 from torch.utils.data import DataLoader
 from torchvision import datasets, transforms
-from Model import MNIST
 import time
+
+class MNIST(torch.nn.Module):
+    def __init__(self):
+        super(MNIST, self).__init__()
+        self.conv = torch.nn.Sequential(torch.nn.Conv2d(1, 32, 3, 1, 1),
+                                        torch.nn.ReLU(),
+                                        torch.nn.Conv2d(32, 64, 3, 1, 1),
+                                        torch.nn.ReLU(),
+                                        torch.nn.MaxPool2d(2, 2))
+        self.dense = torch.nn.Sequential(torch.nn.Linear(14 * 14 * 64, 1024),
+                                         torch.nn.ReLU(),
+                                         torch.nn.Dropout(p=0.2),
+                                         torch.nn.Linear(1024, 10))
+
+    def forward(self, x):
+        x = self.conv(x)
+        x = x.view(-1, 14 * 14 * 64)
+        x = self.dense(x)
+        return x
 
 if __name__ == "__main__":
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    # 1，查看gpu信息
     if_cuda = torch.cuda.is_available()
     print("if_cuda=",if_cuda)
     gpu_count = torch.cuda.device_count()
@@ -17,10 +34,8 @@ if __name__ == "__main__":
     optimizer = torch.optim.Adam(model.parameters())
 
     train_dataset = datasets.MNIST(root='data/', train=True, transform=transforms.ToTensor(), download=True)
-    test_dataset = datasets.MNIST(root='data/', train=False, transform=transforms.ToTensor(), download=True)
-
     train_loader = DataLoader(dataset=train_dataset, batch_size=100, shuffle=True)
-    test_loader = DataLoader(dataset=test_dataset, batch_size=100, shuffle=True)
+
 
     epochs = 2
     number = 0
@@ -45,12 +60,3 @@ if __name__ == "__main__":
         print('[%d,%d] loss:%.03f, correct:%.03f' %
               (epoch + 1, epochs, sum_loss / len(train_loader), 100 * train_correct / len(train_dataset)))
         print("train time: ",(end-start)/number )
-        model.eval()
-        test_correct = 0
-        for inputs,lables in test_loader:
-            inputs, lables = inputs.to(device), lables.to(device)
-            outputs = model(inputs)
-            _, id = torch.max(outputs.data, 1)
-            test_correct += torch.sum(id == lables.data)
-        print("correct:%.3f%%" % (100 * test_correct / len(test_dataset)))
-    torch.save(model.state_dict(), "mnist.pkl")
