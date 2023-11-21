@@ -1,11 +1,7 @@
 import os
-import sys
-import tempfile
 import torch
 import time
 import torch.distributed as dist
-import torch.nn as nn
-import torch.optim as optim
 import torch.multiprocessing as mp
 from torchvision import datasets, transforms
 

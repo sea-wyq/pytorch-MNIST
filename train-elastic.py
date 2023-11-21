@@ -100,3 +100,12 @@ def run():
 
 if __name__ == "__main__":
     run()
+
+# torchrun \
+#     --nnodes=1:2\
+#     --nproc_per_node=1\
+#     --max_restarts=3\
+#     --rdzv_id=1\
+#     --rdzv_backend=c10d\
+#     --rdzv_endpoint="172.17.0.2:1234"\
+#     train.py

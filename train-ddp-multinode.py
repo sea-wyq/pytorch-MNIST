@@ -2,9 +2,7 @@ import os
 import torch
 import time
 import torch.distributed as dist
-import torch.nn as nn
 import argparse
-import torch.optim as optim
 import torch.multiprocessing as mp
 from torchvision import datasets, transforms
 
